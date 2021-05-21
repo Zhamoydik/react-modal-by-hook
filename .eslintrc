@@ -1,0 +1,15 @@
+{
+  "extends": ["react-app"],
+  "rules": {
+    "no-console": "warn",
+    "valid-typeof": "error",
+    "no-constant-condition": "warn",
+    "curly": [1, "multi"],
+    "eqeqeq": "error",
+    "no-else-return": "warn",
+    "no-self-compare": "warn",
+    "yoda": "warn",
+    "init-declarations": "warn",
+    "no-undef-init": "warn"
+  }
+}
