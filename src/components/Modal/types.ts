@@ -18,6 +18,8 @@ export type Instance<T> = {
   open: (request: OpenRequest<T>) => void
 }
 
+export type ContextValueType<T> = Instance<T>
+
 export type Props<T> = {
   modal: Instance<T>
 }

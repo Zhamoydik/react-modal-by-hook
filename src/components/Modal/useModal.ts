@@ -1,54 +1,17 @@
-import { useRef, useState } from "react"
-import { Handlers, Instance, OpenRequest } from "./types"
+import { useContext } from "react"
+import { ModalContext } from "./Provider"
+import { Instance } from "./types"
 
-export const useModal = (): Instance<unknown> => {
-  const [isOpen, setIsOpen] = useState<boolean>(false)
-  const [data, setData] = useState<unknown>(null)
-  const [message, setMessage] = useState<string>("")
-
-  const handlers = useRef<Handlers<unknown>>({})
-
-  const open = (request: OpenRequest<unknown>) => {
-    handlers.current = {
-      onOk: request.onOk,
-      onCancel: request.onCancel,
-      onClose: request.onClose,
-    }
-
-    setData(request.data)
-    setMessage(request.message)
-    setIsOpen(true)
-  }
-
-  const internalHandlers = {
-    onOk: () => {
-      setIsOpen(false)
-      setData(null)
-      setMessage("")
-
-      if (handlers.current.onOk) handlers.current.onOk(data)
-    },
-    onCancel: () => {
-      setIsOpen(false)
-      setData(null)
-      setMessage("")
-
-      if (handlers.current.onCancel) handlers.current.onCancel(data)
-    },
-    onClose: () => {
-      setIsOpen(false)
-      setData(null)
-      setMessage("")
-
-      if (handlers.current.onClose) handlers.current.onClose(data)
-    },
-  }
+const useModal = (): Instance<unknown> => {
+  const context = useContext(ModalContext)
 
   return {
-    isOpen,
-    data,
-    message,
-    internalHandlers,
-    open,
+    isOpen: context?.isOpen ?? false,
+    data: context?.data ?? null,
+    message: context?.message ?? "",
+    internalHandlers: context?.internalHandlers ?? { onOk: () => {}, onCancel: () => {}, onClose: () => {} },
+    open: context?.open ?? (() => {}),
   }
 }
+
+export default useModal
