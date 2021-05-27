@@ -8,7 +8,7 @@ const Left = () => {
   const handleClickOpen = () => {
     modal.open({
       data: "left side",
-      message: "Opened from left",
+      body: "Opened from left",
       onOk: async (data) => alert(data),
     })
   }

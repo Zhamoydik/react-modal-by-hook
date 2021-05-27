@@ -1,3 +1,5 @@
+import React from "react"
+
 export type Handlers<T> = {
   onOk?: (data: T) => Promise<unknown>
   onCancel?: (data: T) => Promise<unknown>
@@ -13,7 +15,7 @@ export type InternalHandlers = {
 export type Instance<T> = {
   isOpen: boolean
   data?: T
-  message?: string
+  body?: React.ReactNode
   internalHandlers: InternalHandlers
 }
 
@@ -30,5 +32,5 @@ export type ContextValueType = {
 
 export type OpenRequest<T> = {
   data: T
-  message: string
+  body: React.ReactNode
 } & Handlers<T>

@@ -45,7 +45,7 @@ const useModal = (): UseModalReturns<unknown> => {
       modals?.set(id, {
         isOpen: true,
         data: request.data,
-        message: request.message,
+        body: request.body,
         internalHandlers: internalHandlers,
       })
 

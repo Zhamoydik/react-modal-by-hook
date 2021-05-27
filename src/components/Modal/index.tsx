@@ -44,7 +44,7 @@ const ModalLayout = (props: ModalProps<unknown>) => {
           <span className={s.title}>Confirm action</span>
           <img className={s.close} src={Cross} alt="Close" title="Close" onClick={handleClickClose} />
         </div>
-        <div className={s.body}>{props.message}</div>
+        <div className={s.body}>{props.body}</div>
         <div className={s.footer}>
           <button className={s.button} ref={cancelRef} onClick={props.internalHandlers.onCancel}>
             Cancel
