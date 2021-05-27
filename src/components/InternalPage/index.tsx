@@ -1,20 +1,20 @@
-import React from "react"
-import { useModal } from "components/Modal"
 import s from "./index.module.css"
+import { useModal } from "../Modal"
+import React from "react"
 
-const Home = () => {
+const InternalPage = () => {
   const modal = useModal()
 
   const handleClickOpenModal = () => {
     modal.open({
       data: "move this to callbacks",
-      message: "Modal from home page",
+      message: "Modal from internal page",
       onOk: async (data) => alert(data),
     })
   }
 
   return (
-    <div className={s.home}>
+    <div className={s.internal}>
       <button className={s.button} onClick={handleClickOpenModal}>
         Open modal
       </button>
@@ -22,4 +22,4 @@ const Home = () => {
   )
 }
 
-export default Home
+export default InternalPage

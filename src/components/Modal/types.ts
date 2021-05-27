@@ -12,16 +12,20 @@ export type InternalHandlers = {
 
 export type Instance<T> = {
   isOpen: boolean
-  data: T
-  message: string
+  data?: T
+  message?: string
   internalHandlers: InternalHandlers
-  open: (request: OpenRequest<T>) => void
 }
 
-export type ContextValueType<T> = Instance<T>
+export type UseModalReturns<T> = { open: (request: OpenRequest<T>) => void }
 
-export type Props<T> = {
-  modal: Instance<T>
+export type ModalProps<T> = Instance<T> & { open: (request: OpenRequest<T>) => void }
+
+export type ContextValueType = {
+  push: (instance: Instance<unknown>) => string
+  set: (id: string, instance: Instance<unknown>) => void
+  get: (id: string) => Instance<unknown>
+  delete: (id: string) => void
 }
 
 export type OpenRequest<T> = {

@@ -1,74 +1,58 @@
 import * as React from "react"
-import { useRef, useState } from "react"
-import { Handlers, OpenRequest, ContextValueType } from "./types"
+import { useRef } from "react"
+import { ContextValueType, Instance } from "./types"
 import { Modal } from "./index"
+import { generateRandomString } from "./utils"
+import useForceUpdate from "hooks/useForceUpdate"
 
-export const ModalContext = React.createContext<null | ContextValueType<unknown>>(null)
+export const ModalContext = React.createContext<null | ContextValueType>(null)
 
-export const Provider = ({ children }: { children: React.ReactElement }) => {
-  const [isOpen, setIsOpen] = useState<boolean>(false)
-  const [data, setData] = useState<unknown>(null)
-  const [message, setMessage] = useState<string>("")
+export const Provider = ({ children }: { children: React.ReactNode }) => {
+  const { current: modals } = useRef(new Map())
+  const forceUpdate = useForceUpdate()
 
-  const handlers = useRef<Handlers<unknown>>({})
+  const push = (instance: Instance<unknown>): string => {
+    const generatedId = generateRandomString()
+    modals.set(generatedId, instance)
 
-  const open = (request: OpenRequest<unknown>) => {
-    handlers.current = {
-      onOk: request.onOk,
-      onCancel: request.onCancel,
-      onClose: request.onClose,
-    }
+    forceUpdate()
 
-    setData(request.data)
-    setMessage(request.message)
-    setIsOpen(true)
+    return generatedId
   }
 
-  const internalHandlers = {
-    onOk: () => {
-      setIsOpen(false)
-      setData(null)
-      setMessage("")
-
-      if (handlers.current.onOk) handlers.current.onOk(data)
-    },
-    onCancel: () => {
-      setIsOpen(false)
-      setData(null)
-      setMessage("")
-
-      if (handlers.current.onCancel) handlers.current.onCancel(data)
-    },
-    onClose: () => {
-      setIsOpen(false)
-      setData(null)
-      setMessage("")
-
-      if (handlers.current.onClose) handlers.current.onClose(data)
-    },
+  const set = (id: string, instance: Instance<unknown>): void => {
+    modals.set(id, instance)
+    forceUpdate()
   }
+
+  const get = (id: string): Instance<unknown> => {
+    return modals.get(id)
+  }
+
+  const _delete = (id: string): void => {
+    modals.delete(id)
+    forceUpdate()
+  }
+
+  const modalsEntries = []
+
+  for (let modal of modals.entries()) modalsEntries.push(modal)
 
   return (
     <ModalContext.Provider
       value={{
-        isOpen,
-        data,
-        message,
-        internalHandlers,
-        open,
+        push,
+        set,
+        get,
+        delete: _delete,
       }}
     >
       {children}
-      <div id="modal-target" />
-      <Modal
-        modal={{
-          isOpen,
-          data,
-          message,
-          internalHandlers,
-          open,
-        }}
-      />
+      <div id="modal-target">
+        {modalsEntries.map(([id, modal]) => (
+          <Modal key={id} {...modal} />
+        ))}
+      </div>
     </ModalContext.Provider>
   )
 }
