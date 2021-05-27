@@ -1,23 +1,13 @@
 import React from "react"
-import { useModal } from "components/Modal"
+import Right from "../Right"
+import Left from "../Left"
 import s from "./index.module.css"
 
 const Home = () => {
-  const modal = useModal()
-
-  const handleClickOpenModal = () => {
-    modal.open({
-      data: "move this to callbacks",
-      message: "Modal from home page",
-      onOk: async (data) => alert(data),
-    })
-  }
-
   return (
     <div className={s.home}>
-      <button className={s.button} onClick={handleClickOpenModal}>
-        Open modal
-      </button>
+      <Left />
+      <Right />
     </div>
   )
 }

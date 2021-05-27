@@ -62,12 +62,6 @@ const useModal = (): UseModalReturns<unknown> => {
     }
   }, [id, modals])
 
-  useEffect(() => {
-    return () => {
-      if (id !== null && modals?.delete) modals?.delete(id)
-    }
-  }, [id, modals])
-
   return { open }
 }
 

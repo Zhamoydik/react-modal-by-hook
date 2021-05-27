@@ -1,0 +1,6 @@
+.right {
+  display: grid;
+  align-content: center;
+  justify-content: center;
+  background-color: #e0f2f1;
+}
