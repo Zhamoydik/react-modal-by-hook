@@ -59,6 +59,8 @@
 }
 
 .button {
+  display: inline-flex;
+  align-content: center;
   font-family: inherit;
   background-color: #26c6da;
   color: white;
@@ -69,4 +71,10 @@
   font-weight: 600;
   margin-left: 10px;
   cursor: pointer;
+  transition: all 0.1s ease-in-out;
+}
+
+.button:disabled {
+  background-color: #80deea;
+  cursor: default;
 }

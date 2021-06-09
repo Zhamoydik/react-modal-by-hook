@@ -1,9 +1,9 @@
 import React from "react"
 
 export type Handlers<T> = {
-  onOk?: (data: T) => Promise<unknown>
-  onCancel?: (data: T) => Promise<unknown>
-  onClose?: (data: T) => Promise<unknown>
+  onOk?: (data: T) => Promise<unknown> | void
+  onCancel?: (data: T) => Promise<unknown> | void
+  onClose?: (data: T) => Promise<unknown> | void
 }
 
 export type InternalHandlers = {
@@ -17,6 +17,7 @@ export type Instance<T> = {
   data?: T
   body?: React.ReactNode
   internalHandlers: InternalHandlers
+  okInProgress: boolean
 }
 
 export type UseModalReturns<T> = { open: (request: OpenRequest<T>) => void }

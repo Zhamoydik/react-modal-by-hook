@@ -9,7 +9,10 @@ const Left = () => {
     modal.open({
       data: "left side",
       body: "Opened from left",
-      onOk: async (data) => alert(data),
+      onOk: () =>
+        new Promise((resolve) => {
+          setTimeout(resolve, 10000)
+        }),
     })
   }
 

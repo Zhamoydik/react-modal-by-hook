@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react"
 import { ModalContext } from "./Provider"
-import { UseModalReturns, OpenRequest } from "./types"
+import { UseModalReturns, OpenRequest, Instance } from "./types"
 import useForceUpdate from "hooks/useForceUpdate"
 
 const useModal = (): UseModalReturns<unknown> => {
@@ -10,7 +10,17 @@ const useModal = (): UseModalReturns<unknown> => {
 
   const forceUpdate = useForceUpdate()
 
-  const clearInstance = () => {
+  const update = (instance: Partial<Instance<unknown>>) => {
+    if (id !== null && modals) {
+      const currentModal = modals.get(id)
+      modals.set(id, {
+        ...currentModal,
+        ...instance,
+      })
+    }
+  }
+
+  const clear = () => {
     if (id !== null && modals?.set)
       modals.set(id, {
         isOpen: false,
@@ -19,23 +29,31 @@ const useModal = (): UseModalReturns<unknown> => {
           onCancel: () => {},
           onClose: () => {},
         },
+        okInProgress: false,
       })
   }
 
   const open = (request: OpenRequest<unknown>) => {
     const internalHandlers = {
       onOk: () => {
-        clearInstance()
-
-        if (request.onOk) request.onOk(request.data)
+        if (request.onOk) {
+          const handlerReturns = request.onOk(request.data)
+          if (!(handlerReturns instanceof Promise)) clear()
+          else {
+            update({ okInProgress: true })
+            handlerReturns.then(clear).catch(() => {
+              update({ okInProgress: false })
+            })
+          }
+        } else clear()
       },
       onCancel: () => {
-        clearInstance()
+        clear()
 
         if (request.onCancel) request.onCancel(request.data)
       },
       onClose: () => {
-        clearInstance()
+        clear()
 
         if (request.onClose) request.onClose(request.data)
       },
@@ -47,6 +65,7 @@ const useModal = (): UseModalReturns<unknown> => {
         data: request.data,
         body: request.body,
         internalHandlers: internalHandlers,
+        okInProgress: false,
       })
 
     forceUpdate()
@@ -57,6 +76,7 @@ const useModal = (): UseModalReturns<unknown> => {
       const instanceId = modals?.push({
         isOpen: false,
         internalHandlers: { onOk: () => {}, onCancel: () => {}, onClose: () => {} },
+        okInProgress: false,
       })
       setId(instanceId)
     }
